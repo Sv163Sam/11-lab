@@ -91,21 +91,6 @@ broken_line broken_line::operator+(const broken_line& rhs)
        _p[i] = rhs._p[i - clone_size]; 
     } 
     return *this; 
-
-
-
-   //if (_p[_size - 1]._x != rhs._p[0]._x && _p[_size - 1]._y != rhs._p[0]._y || _p[]._x != rhs._p[0]._x && _p[_size - 1]._y != rhs._p[0]._y) 
-   // throw std::logic_error("error"); 
-   /*broken_line tmp(_size + rhs._size - 1); 
-   for (unsigned int i = 0; i < _size; i++) 
-    { 
-      tmp._p[i] = _p[i]; 
-    } 
-    for (unsigned int i = _size; i < _size + rhs._size; i++)
-    { 
-       tmp._p[i] = rhs._p[i-_size]; 
-    } 
-    return tmp; */
 } 
 
 broken_line broken_line::operator+(const point& rhs) 
