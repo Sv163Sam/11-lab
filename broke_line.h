@@ -1,11 +1,12 @@
+
+
+
+
+
+
 #pragma once 
 #include <iostream> 
 #include <utility> 
-
-/* 
-* Добавить: 
-* -1- Перегрузка операторов сравнения (==, !=) 
-*/ 
 
 struct point 
 { 
@@ -24,27 +25,33 @@ private:
     unsigned _size; 
 public: 
     broken_line(); 
-    broken_line(unsigned int size); 
+    broken_line(const unsigned int size); 
     broken_line(const broken_line& rhs); 
 
     void swap(broken_line& rhs); 
     
-    // по ссылке для записи данных, константый для чтения 
-    point& operator[](unsigned int index); 
-    point operator[](unsigned int index) const; 
+    point& operator[](const unsigned int index); 
+    point operator[](const unsigned int index) const; 
+    broken_line& operator= (const broken_line& obj); 
     
-    broken_line operator+(const broken_line& line); 
-    broken_line operator+(const point& point); 
-    broken_line operator+=(const point& rhs);
-    
-    friend std::istream& operator>>(std::istream& in, broken_line& line); 
-    friend std::ostream& operator<<(std::ostream& out, const broken_line& line); 
+    friend broken_line& operator+(const broken_line& line, const broken_line& line_s); 
+    friend broken_line& operator+(const point& point, const broken_line& line); 
+    friend broken_line& operator+(const broken_line& line, const point& point);    
+    friend broken_line& operator+=(const broken_line& line, const broken_line& line_s); 
+    friend broken_line& operator+=(const point& point, const broken_line& line); 
+    friend broken_line& operator+=(const broken_line& line, const point& point);  
+
+    std::istream& operator>>(broken_line& line); 
+    std::ostream& operator<<(const broken_line& line); 
+    std::istream& operator>>(point& point); 
+    std::ostream& operator<<(const point& point);
     
     ~broken_line();    
 
-    double len();
-    
-    bool operator > (broken_line& a);
-    bool operator < (broken_line& a);
-    bool operator == (broken_line& a);
+    double len(const broken_line& line);
+    int quantity();
+
+    bool operator > (const broken_line& a);
+    bool operator < (const broken_line& a);
+    bool operator == (const broken_line& a);
 };

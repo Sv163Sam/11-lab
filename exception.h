@@ -2,10 +2,10 @@
 
 class exc
 {
-	char _message[70];
+	char *_message;
 public:
-	exc(const char* message);
-	const char* get_message();
+	exc(char* message);
+	char* get_message();
 	virtual void print();
 };
 class invalid_number : public exc

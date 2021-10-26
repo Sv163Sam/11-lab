@@ -15,7 +15,7 @@ point::point(double x, double y)
 
 broken_line::broken_line(): _p(NULL), _size(0) {} 
 
-broken_line::broken_line(unsigned int size) 
+broken_line::broken_line(const unsigned int size) 
 { 
    _size = size; 
    _p = new point[_size]; 
@@ -52,152 +52,200 @@ void broken_line::swap(broken_line& rhs)
    std::swap(_p, rhs._p); 
 } 
 
-point& broken_line::operator[](unsigned int index) 
+point& broken_line::operator[](const unsigned int index) 
 { 
    if (_size <= index) throw invalid_index();
    return _p[index]; 
 } 
 
-point broken_line::operator[](unsigned int index) const 
+point broken_line::operator[](const unsigned int index) const 
 { 
    if (_size <= index) throw invalid_index();
    return _p[index]; 
 } 
+broken_line& broken_line::operator= (const broken_line& obj)
+{
+    if (_size <= 0) throw invalid_index();
+    this->_size = obj._size;
+    for (unsigned int i = 0; i < obj._size; i++) 
+    {
+        this->_p[i] = obj._p[i]; 
+    }
+    return *this;
+}
 
-broken_line broken_line::operator+(const broken_line& rhs) 
+int broken_line::quantity()
+{
+    if (_size <= 0) throw invalid_index();
+    return _size;
+}
+
+broken_line& operator+(const broken_line& line, const broken_line& line_s) 
 { 
     int count = 0; 
-    for (unsigned int i = 0; i < _size; i++)
+    for (unsigned int i = 0; i < line._size; i++)
     {
-        if (_p[i]._x == rhs._p[i]._x && _p[i]._y == rhs._p[i]._y) count++;
+        if (line._p[i]._x == line_s._p[i]._x && line._p[i]._y == line_s._p[i]._y) count++;
     }
-    if (count == _size) throw equal_lines();
+    if (count == line._size) throw equal_lines();
 
-    
-    if (_p[_size - 1]._x == rhs._p[0]._x && _p[_size - 1]._y == rhs._p[0]._y)
+    if (line._p[line._size - 1]._x == line._p[0]._x && line._p[line._size - 1]._y == line_s._p[0]._y)
     {
-        int clone_size = _size; 
-        _size = _size + rhs._size - 1;
-    for (unsigned int i = clone_size; i < _size - 1; i++)
-    { 
-        _p[i - 1] = rhs._p[i - clone_size - 1]; 
-    } 
-    return *this; 
+        int clone_size = line._size; 
+        int a = line._size + line_s._size - 1;
+        broken_line line_(a);
+        for (unsigned int i = 0; i < line._size; i++)
+        {
+            line_._p[i] = line._p[i];
+        }
+        for (unsigned int i = clone_size; i < a - 1; i++)
+        { 
+            line_._p[i - 1] = line_s._p[i - clone_size - 1]; 
+        } 
+        return line_; 
     }
-    int clone_size = _size; 
-    _size = _size + rhs._size;
-    for (unsigned int i = clone_size; i < _size; i++)
+    else
+    {
+    int clone_size = line._size; 
+    int a = line._size + line_s._size;
+    broken_line line_(a);
+    for (unsigned int i = 0; i < line._size; i++)
+    {
+        line_._p[i] = line._p[i];
+    }
+    for (unsigned int i = clone_size; i < a; i++)
     { 
-       _p[i] = rhs._p[i - clone_size]; 
+       line_._p[i] = line_s._p[i - clone_size]; 
     } 
-    return *this; 
+    return line_; 
+    }
 } 
 
-broken_line broken_line::operator+(const point& rhs) 
+broken_line& operator+(const point& point,const broken_line& line) 
 { 
-   for (int i = 0; i < _size; i++)
+   for (int i = 0; i < line._size; i++)
    {
-       if (rhs._x == _p[i]._x && rhs._y == _p[i]._y) throw equal_points();
+       if (point._x == line._p[i]._x && point._y == line._p[i]._y) throw equal_points();
    }
-   _size = _size + 1;
-   for (int i = _size; i > 0; i--)
+   int a = line._size + 1;
+   broken_line line_(a);
+   for (int i = a; i > 0; i--)
    {
-       _p[i] = _p[i - 1];
+       line_._p[i] = line._p[i - 1];
    }
-   _p[0]._x = rhs._x;
-   _p[0]._y = rhs._y;
-   return *this; 
+   line_._p[0]._x = point._x;
+   line_._p[0]._y = point._y;
+   return line_; 
 } 
 
-broken_line broken_line::operator+=(const point& rhs) 
+broken_line& operator+(const broken_line& line, const point& point) 
 { 
-   for (int i = 0; i < _size; i++)
+   for (int i = 0; i < line._size; i++)
    {
-       if (rhs._x == _p[i]._x && rhs._y == _p[i]._y) throw equal_points();
+       if (point._x == line._p[i]._x && point._y == line._p[i]._y) throw equal_points();
    }
-   _size = _size + 1;
-   _p[_size - 1]._x = rhs._x;
-   _p[_size - 1]._y = rhs._y;
-   return *this; 
+   int a = line._size + 1;
+   broken_line line_(a);
+   line_._p[a - 1]._x = point._x;
+   line_._p[a - 1]._y = point._y;
+   return line_; 
 } 
-
+/*
+broken_line& operator+=(const broken_line& line, const point& point) 
+{
+    return (line+point);
+}
+broken_line& operator+=(const broken_line& line, const broken_line& line_s) 
+{
+    return (line+line_s);
+}
+broken_line& operator+=(const point& point, const broken_line& line) 
+{
+    return (point+line);
+}
+*/
 broken_line::~broken_line() 
 { 
    delete[] _p; 
 } 
-
-std::istream& operator>>(std::istream& in, point& lhs) 
+std::istream& broken_line::operator>>(point& lhs) 
 { 
    std::cout << "Input x: "; 
-   in >> lhs._x; 
+   std::cin >> lhs._x; 
    std::cout << "Input y: "; 
-   in >> lhs._y; 
-   return in; 
+   std::cin >> lhs._y; 
+   return std::cin; 
 } 
 
-std::ostream& operator<<(std::ostream& out, const point& lhs) 
+std::ostream& broken_line::operator<<(const point& lhs) 
 { 
-    out << "\nx - " << lhs._x; 
-    out << "\ny - " << lhs._y; 
-    return out; 
+    std::cout << "\nx - " << lhs._x; 
+    std::cout << "\ny - " << lhs._y; 
+    return std::cout; 
 } 
 
-std::istream& operator>>(std::istream& in, broken_line& lhs) 
+std::istream& broken_line::operator>>(broken_line& lhs) 
 { 
     for (unsigned int i = 0; i < lhs._size; i++) { 
-    in >> lhs._p[i]; 
+    std::cin >> lhs._p[i]; 
     } 
-    return in; 
+    return std::cin; 
 } 
 
-std::ostream& operator<<(std::ostream& out, const broken_line& lhs) 
+std::ostream& broken_line::operator<<(const broken_line& lhs) 
 { 
    for (unsigned int i = 0; i < lhs._size; i++) { 
-   out << i << " point is: "<< lhs._p[i]; 
-   out << '\n'; 
+   std::cout << i << " point is: "<< lhs._p[i]; 
+   std::cout << '\n'; 
    } 
-
-return out; 
+   return std::cout; 
 }
 
-double broken_line:: len()
+double broken_line::len(const broken_line& line)
     {
         double sum=0;
-        if (_size == 1)
+        if (line._size == 1)
         {
             return sum;
         }
-        for (int i = 0; i < _size - 1; i++)
+        for (int i = 0; i < line._size - 1; i++)
         {
             
-            sum += sqrt(pow((_p[i + 1]._x - _p[i]._x), 2) + pow((_p[i + 1]._y - _p[i]._y), 2));
+            sum += sqrt(pow((line._p[i + 1]._x - line._p[i]._x), 2) + pow((line._p[i + 1]._y - line._p[i]._y), 2));
         }
         return sum;
     }
 
-bool broken_line::operator > (broken_line& a)
+bool broken_line::operator > (const broken_line& a)
     {
-        if (len() <= a.len())
+        if (len(*this) <= len(a))
         {
             return false;
         }
         else return true;
     }
-bool broken_line::operator < (broken_line& a)
+bool broken_line::operator < (const broken_line& a)
     {
-        if (len() >= a.len())
+        if (len(*this) >= len(a))
         {
             return false;
         }
         else return true;
     }
-bool broken_line::operator == (broken_line& a)
+bool broken_line::operator == (const broken_line& a)
     {
-        if (len() < a.len() || len() > a.len())
+        if (len(*this) < len(a) || len(*this) > len(a))
         {
             return false;
         }
-        else return true;
+        else 
+        {
+            int count = 0;
+            for (unsigned int i = 0; i < _size; i++)
+            {
+                if (_p[i]._x == a._p[i]._x && _p[i]._y == a._p[i]._y) count++;
+            }
+            if (count == _size) return true;
+        } 
+        return false;
     }
-
-

@@ -1,7 +1,7 @@
+#include "broke_line.cpp"
 #include "iostream"
 #include "cmath"
 #include "cstdlib"
-#include "broke_line.cpp"
 #include "string"
 
 //Класс ломаных линий на плоскости с произвольным количеством вершин .
@@ -25,12 +25,12 @@ int menu()
 {
     std::cout << "\nPress:\n1 - the sum of the lines,\n2 - the sum of the line and point at the end,\n"
     "3 - the sum of the line and point to start\n4 - accessing an point of the line by index\n"
-    "5 - calсulate the length of the broken line\n6 - compare 2 lines\n"
+    "5 - calсulate the length of the broken line\n6 - compare 2 lines\n7 - index of line\n"
     "Esc - terminate programm execution\n";
     while (true)
     {
         int key = get_key();
-        if (key == 49 || key == 50 || key == 51 || key == 52 || key == 53 || key == 54|| key == 27)
+        if (key == 49 || key == 50 || key == 51 || key == 52 || key == 53 || key == 54 || key == 55 || key == 27)
             return key;
     }
 }
@@ -44,7 +44,7 @@ void sum_lines(broken_line &obj){
     (second_line_p_amount < 0 && second_line_p_amount != int(second_line_p_amount))) throw invalid_number();
 
     broken_line second_line(second_line_p_amount);
-    std::cout << second_line << '\n';
+    second_line << '\n';
     obj + second_line;
 }
 
@@ -87,6 +87,10 @@ int compare_lines (broken_line &obj, broken_line &sec_o)
     return 0;
 }
 
+void points_amount(int amount)
+{
+    std::cout << amount;
+}
 
 int main()
 {
@@ -101,12 +105,12 @@ int main()
     (first_line_p_amount < 0 && first_line_p_amount != int(first_line_p_amount))) throw invalid_number();
     } catch (exc& err)
     {
-	    err.print();
-	    std::cin >> first_line_p_amount;
-	}
+        err.print();
+        std::cin >> first_line_p_amount;
+    }
 
     broken_line first_line(first_line_p_amount);
-    std::cout << first_line << '\n';
+    first_line << '\n';
     
 
     while (select_var != 1) 
@@ -118,19 +122,19 @@ int main()
         case 49:
         {
             sum_lines(first_line);
-            std::cout << first_line << '\n';
+            first_line << '\n';
             break;
         }
         case 50:
         {
             sum_line_and_point_to_end(first_line);
-            std::cout << first_line << '\n';
+            first_line << '\n';
             break;
         }
         case 51:
         {
             sum_line_and_point_to_start(first_line);
-            std::cout << first_line << '\n';
+            first_line << '\n';
             break;
         }
         case 52:
@@ -140,7 +144,7 @@ int main()
         }
         case 53:
         {
-            std::cout << first_line.len();
+            std::cout << first_line.len(first_line);
             break;
         }
         case 54:
@@ -155,23 +159,27 @@ int main()
 
             if (compare_lines(first_line, second_line) == 0) 
             {
-                std::cout << first_line;
+                first_line << '\n';
                 std::cout << "\n == \n";
-                std::cout << second_line;
+                second_line << '\n';
             }
             if (compare_lines(first_line, second_line) == 1) 
             {
-                std::cout << first_line;
+                first_line << '\n';
                 std::cout << "\n > \n";
-                std::cout << second_line;
+                second_line << '\n';
             }
             if (compare_lines(first_line, second_line) == 2) 
             {
-                std::cout << first_line;
+                first_line << '\n';
                 std::cout << "\n < \n";
-                std::cout << second_line;
+                second_line << '\n';
             }
             break;
+        }
+        case 55:{
+            points_amount(first_line_p_amount);
+            break; 
         }
         case 27:{
             select_var = 1;
@@ -184,10 +192,6 @@ int main()
         err.print();
     }
     }
-    std::cout << first_line << '\n';
+    first_line << '\n';
     return 0;
 }
-
-
-
-
